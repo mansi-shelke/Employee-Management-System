@@ -19,13 +19,16 @@ function App() {
     console.log("Save button clicked");
 
     axios
-      .post("http://localhost:8080/saveEmployee", {
-        name,
-        email,
-        phone,
-        department,
-        salary,
-      })
+      .post(
+        "https://employee-management-backend-3dzy.onrender.com/saveEmployee",
+        {
+          name,
+          email,
+          phone,
+          department,
+          salary,
+        },
+      )
       .then((response) => {
         console.log(response.data);
 
@@ -47,7 +50,9 @@ function App() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:8080/getAllEmployees")
+      .get(
+        "https://employee-management-backend-3dzy.onrender.com/getAllEmployees",
+      )
       .then((response) => {
         setEmployees(response.data);
       })
@@ -56,7 +61,9 @@ function App() {
 
   const deleteEmployee = (id) => {
     axios
-      .delete(`http://localhost:8080/deleteEmployee/${id}`)
+      .delete(
+        `https://employee-management-backend-3dzy.onrender.com/deleteEmployee/${id}`,
+      )
       .then(() => {
         setEmployees(employees.filter((emp) => emp.id !== id));
       })
@@ -66,7 +73,7 @@ function App() {
   const updateEmployee = () => {
     axios
       .put(
-        `http://localhost:8080/updateEmployee/${editEmployee.id}`,
+        `https://employee-management-backend-3dzy.onrender.com/updateEmployee/${editEmployee.id}`,
         editEmployee,
       )
       .then((response) => {
