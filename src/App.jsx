@@ -14,6 +14,7 @@ function App() {
   const [department, setDepartment] = useState("");
   const [editEmployee, setEditEmployee] = useState(null);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
   // Employee Table साठी Ref
   const tableRef = useRef(null);
@@ -52,10 +53,15 @@ function App() {
       .get(
         "https://employee-management-backend-3dzy.onrender.com/getAllEmployees",
       )
-      .then((response) => setEmployees(response.data))
-      .catch((error) => console.log(error));
+      .then((response) => {
+        setEmployees(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
   }, []);
-
   // Delete Employee
   const deleteEmployee = (id) => {
     const isConfirmed = window.confirm(
@@ -216,66 +222,75 @@ function App() {
             </div>
 
             {/* Employee List Table (इथे ref जोडला आहे) */}
-            <div
-              ref={tableRef}
-              className="overflow-x-auto bg-white rounded-2xl shadow-md border border-purple-100"
-            >
-              <table className="w-full text-left border-collapse">
-                <thead className="bg-purple-600 text-white">
-                  <tr>
-                    <th className="px-6 py-4 font-semibold text-sm">ID</th>
-                    <th className="px-6 py-4 font-semibold text-sm">Name</th>
-                    <th className="px-6 py-4 font-semibold text-sm">Email</th>
-                    <th className="px-6 py-4 font-semibold text-sm">Phone</th>
-                    <th className="px-6 py-4 font-semibold text-sm">
-                      Department
-                    </th>
-                    <th className="px-6 py-4 font-semibold text-sm">Salary</th>
-                    <th className="px-6 py-4 font-semibold text-sm text-center">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
 
-                <tbody className="divide-y divide-purple-50 text-slate-700">
-                  {filteredEmployees.map((employee) => (
-                    <tr
-                      key={employee.id}
-                      className="hover:bg-purple-50/50 transition duration-150"
-                    >
-                      <td className="px-6 py-4 font-medium">{employee.id}</td>
-                      <td className="px-6 py-4 font-semibold text-slate-800">
-                        {employee.name}
-                      </td>
-                      <td className="px-6 py-4">{employee.email}</td>
-                      <td className="px-6 py-4">{employee.phone}</td>
-                      <td className="px-6 py-4">
-                        <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
-                          {employee.department}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 font-medium">
-                        ₹{employee.salary}
-                      </td>
-                      <td className="px-6 py-4 text-center">
-                        <button
-                          onClick={() => setEditEmployee(employee)}
-                          className="bg-purple-100 hover:bg-purple-200 text-purple-700 font-medium px-3.5 py-1.5 rounded-lg mr-2 transition duration-200"
-                        >
-                          Update
-                        </button>
-                        <button
-                          onClick={() => deleteEmployee(employee.id)}
-                          className="bg-rose-100 hover:bg-rose-200 text-rose-600 font-medium px-3.5 py-1.5 rounded-lg transition duration-200"
-                        >
-                          Delete
-                        </button>
-                      </td>
+            {loading ? (
+              <h3 className="text-center text-purple-600 text-lg font-semibold py-8">
+                Loading Employees... ⏳
+              </h3>
+            ) : (
+              <div
+                ref={tableRef}
+                className="overflow-x-auto bg-white rounded-2xl shadow-md border border-purple-100"
+              >
+                <table className="w-full text-left border-collapse">
+                  <thead className="bg-purple-600 text-white">
+                    <tr>
+                      <th className="px-6 py-4 font-semibold text-sm">ID</th>
+                      <th className="px-6 py-4 font-semibold text-sm">Name</th>
+                      <th className="px-6 py-4 font-semibold text-sm">Email</th>
+                      <th className="px-6 py-4 font-semibold text-sm">Phone</th>
+                      <th className="px-6 py-4 font-semibold text-sm">
+                        Department
+                      </th>
+                      <th className="px-6 py-4 font-semibold text-sm">
+                        Salary
+                      </th>
+                      <th className="px-6 py-4 font-semibold text-sm text-center">
+                        Action
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+
+                  <tbody className="divide-y divide-purple-50 text-slate-700">
+                    {filteredEmployees.map((employee) => (
+                      <tr
+                        key={employee.id}
+                        className="hover:bg-purple-50/50 transition duration-150"
+                      >
+                        <td className="px-6 py-4 font-medium">{employee.id}</td>
+                        <td className="px-6 py-4 font-semibold text-slate-800">
+                          {employee.name}
+                        </td>
+                        <td className="px-6 py-4">{employee.email}</td>
+                        <td className="px-6 py-4">{employee.phone}</td>
+                        <td className="px-6 py-4">
+                          <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
+                            {employee.department}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 font-medium">
+                          ₹{employee.salary}
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <button
+                            onClick={() => setEditEmployee(employee)}
+                            className="bg-purple-100 hover:bg-purple-200 text-purple-700 font-medium px-3.5 py-1.5 rounded-lg mr-2 transition duration-200"
+                          >
+                            Update
+                          </button>
+                          <button
+                            onClick={() => deleteEmployee(employee.id)}
+                            className="bg-rose-100 hover:bg-rose-200 text-rose-600 font-medium px-3.5 py-1.5 rounded-lg transition duration-200"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
 
             {/* No Result */}
             {filteredEmployees.length === 0 && (
